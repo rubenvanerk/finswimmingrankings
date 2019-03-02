@@ -24,7 +24,8 @@ class FrontPageRecords(TemplateView):
         for gender in top_results['genders']:
             for event in Event.objects.filter(type=1).all():
                 top_result = next(
-                    iter(event.get_top_by_competition_and_gender(competition=None, gender=gender, limit=1)), None)
+                    iter(event.get_top_by_competition_and_gender(competition=None, gender=gender, limit=1,
+                                                                 pool_length=Competition.LONG_COURSE)), None)
                 top_results['genders'][gender].append(top_result)
 
         context['top_results'] = top_results
@@ -133,7 +134,7 @@ class EventOverview(TemplateView):
 
             results_women = IndividualResult.objects.filter(event=event, athlete__gender=2,
                                                             extra_analysis_time_by=None,
-                                                            competition__pool_length=Competition.LONG_COURSE)\
+                                                            competition__pool_length=Competition.LONG_COURSE) \
                 .distinct('athlete')
             results_women = sorted(results_women, key=operator.attrgetter('time'))[:limit]
             context['events'][event.name]['women'] = results_women

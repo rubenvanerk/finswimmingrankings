@@ -75,14 +75,15 @@ class Event(models.Model):
             previous_segment = relay_order.segment
         return True
 
-    def get_top_by_competition_and_gender(self, competition, gender, limit):
+    def get_top_by_competition_and_gender(self, competition, gender, limit, pool_length=None):
         if type(gender) is not int:
             if gender is 'men':
                 gender = 1
             else:
                 gender = 2
-        query_set = IndividualResult.objects.filter(event=self, athlete__gender=gender,
-                                                    competition__pool_length=Competition.LONG_COURSE)
+        query_set = IndividualResult.objects.filter(event=self, athlete__gender=gender)
+        if pool_length is not None:
+            query_set = query_set.filter(competition__pool_length=pool_length)
         if competition is not None:
             query_set = query_set.filter(competition=competition)
 
