@@ -18,7 +18,7 @@
 
 {% block content %}
     <h1>
-        {{ athlete.name }} - {{ event.name }}
+        {{ athlete.name }} - {{ event.name }} - {{ pool_length }}m
     </h1>
 
     <a href="{% url 'athlete-overview' slug=athlete.slug %}" class="back button">

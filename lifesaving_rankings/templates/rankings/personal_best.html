@@ -47,7 +47,7 @@
                                 {{ personal_best.event.name }}</a>
                         </td>
                         <td>
-                            <a href="{% url 'athlete-event' slug=athlete.slug event_name=personal_best.event.name|to_url %}">
+                            <a href="{% url 'athlete-event' slug=athlete.slug event_name=personal_best.event.name|to_url pool_length=personal_best.competition.pool_length %}">
                                 {{ personal_best.time|format_time }}</a>
                         </td>
                         <td>

@@ -1,10 +1,8 @@
 from .base import *
 
-ALLOWED_HOSTS = ['www.lifesavingrankings.nl',
-                 'lifesavingrankings.nl',
-                 'www.lifesavingrankings.com',
-                 'lifesavingrankings.com',
-                 'b6ip9znscb.execute-api.eu-central-1.amazonaws.com']
+ALLOWED_HOSTS = ['www.finswimmingrankings.com',
+                 'finswimmingrankings.com',
+                 'mrxc5nd7n4.execute-api.eu-central-1.amazonaws.com']
 DEBUG = False
 
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

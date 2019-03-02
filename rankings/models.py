@@ -81,7 +81,8 @@ class Event(models.Model):
                 gender = 1
             else:
                 gender = 2
-        query_set = IndividualResult.objects.filter(event=self, athlete__gender=gender)
+        query_set = IndividualResult.objects.filter(event=self, athlete__gender=gender,
+                                                    competition__pool_length=Competition.LONG_COURSE)
         if competition is not None:
             query_set = query_set.filter(competition=competition)
 
@@ -97,12 +98,19 @@ class Competition(models.Model):
         (ELECTRONIC, 'Electronic'),
         (BY_HAND, 'By hand')
     )
+    LONG_COURSE = 50
+    SHORT_COURSE = 25
+    POOL_LENGTHS = (
+        (LONG_COURSE, "Long course"),
+        (SHORT_COURSE, "Short Course")
+    )
     name = models.CharField(max_length=100, unique=True, null=True)
     slug = models.SlugField(null=True)
     date = models.DateField()
     location = models.CharField(max_length=100)
     type_of_timekeeping = models.IntegerField(default=ELECTRONIC, choices=TYPES)
     is_concept = models.BooleanField(default=False)
+    pool_length = models.IntegerField(default=LONG_COURSE, choices=POOL_LENGTHS)
 
     prepopulated_fields = {"slug": ("name",)}
 

@@ -17,8 +17,8 @@ class FrontPageRecords(TemplateView):
         context['athlete_count'] = Athlete.objects.all().count()
         context['result_count'] = IndividualResult.objects.all().count()
         context['home'] = True
-        context['last_added_competition'] = Competition.objects.filter(slug__isnull=False).filter(
-            is_concept=False).order_by('-date').first()
+        context['last_added_competition'] = Competition.objects.filter(slug__isnull=False,
+                                                                       is_concept=False).order_by('-date').first()
 
         top_results = {'genders': {'women': [], 'men': []}}
         for gender in top_results['genders']:
@@ -124,14 +124,17 @@ class EventOverview(TemplateView):
             context['events'][event.name] = {}
 
             results_men = IndividualResult.objects.filter(event=event, athlete__gender=1,
-                                                          extra_analysis_time_by=None).order_by('athlete',
-                                                                                                'time').distinct(
-                'athlete')
+                                                          extra_analysis_time_by=None,
+                                                          competition__pool_length=Competition.LONG_COURSE) \
+                .order_by('athlete', 'time') \
+                .distinct('athlete')
             results_men = IndividualResult.objects.filter(id__in=results_men).order_by('time')[:limit]
             context['events'][event.name]['men'] = results_men
 
             results_women = IndividualResult.objects.filter(event=event, athlete__gender=2,
-                                                            extra_analysis_time_by=None).distinct('athlete')
+                                                            extra_analysis_time_by=None,
+                                                            competition__pool_length=Competition.LONG_COURSE)\
+                .distinct('athlete')
             results_women = sorted(results_women, key=operator.attrgetter('time'))[:limit]
             context['events'][event.name]['women'] = results_women
         return context
@@ -156,14 +159,14 @@ class PersonalBests(TemplateView):
         context['personal_bests'] = {}
 
         qs = IndividualResult.find_by_athlete(athlete) \
-            .filter(event__type=1, extra_analysis_time_by=None) \
+            .filter(competition__pool_length=Competition.LONG_COURSE, extra_analysis_time_by=None) \
             .order_by('event', 'time').distinct('event')
-        context['personal_bests']['individual'] = IndividualResult.objects.filter(id__in=qs).order_by('time')
+        context['personal_bests']['50m'] = IndividualResult.objects.filter(id__in=qs).order_by('time')
 
         qs = IndividualResult.find_by_athlete(athlete) \
-            .filter(event__type=2, extra_analysis_time_by=None) \
+            .filter(competition__pool_length=Competition.SHORT_COURSE, extra_analysis_time_by=None) \
             .order_by('event', 'time').distinct('event')
-        context['personal_bests']['relay'] = IndividualResult.objects.filter(id__in=qs).order_by('time')
+        context['personal_bests']['25m'] = IndividualResult.objects.filter(id__in=qs).order_by('time')
 
         context['athlete'] = self.get_athlete()
         return context
@@ -196,8 +199,9 @@ class EventByAthlete(ListView):
 
         athlete = self.get_athlete()
         event = self.get_event()
+        pool_length = self.kwargs.get('pool_length')
 
-        qs = qs.filter(athlete=athlete, event=event)
+        qs = qs.filter(athlete=athlete, event=event, competition__pool_length=pool_length)
         if self.request.user.is_authenticated:
             user = self.request.user
             qs = qs.filter(Q(extra_analysis_time_by=user) | Q(extra_analysis_time_by=None))
@@ -210,6 +214,7 @@ class EventByAthlete(ListView):
         context = super().get_context_data()
         context['athlete'] = self.get_athlete()
         context['event'] = self.get_event()
+        context['pool_length'] = self.kwargs.get('pool_length')
         return context
 
     template_name = 'rankings/event_by_athlete.html'
@@ -331,7 +336,7 @@ class BestByEvent(ListView):
 
     def get_queryset(self):
         qs = super(BestByEvent, self).get_queryset()
-        qs = qs.filter(extra_analysis_time_by=None)
+        qs = qs.filter(extra_analysis_time_by=None, competition__pool_length=Competition.LONG_COURSE)
 
         event = self.get_event()
         gender = gender_name_to_int(self.kwargs.get('gender'))

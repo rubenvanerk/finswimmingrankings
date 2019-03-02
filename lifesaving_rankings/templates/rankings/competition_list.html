@@ -30,6 +30,7 @@
             <th>Competition</th>
             <th>Date</th>
             <th>Location</th>
+            <th>25m / 50m</th>
             <th>Participants</th>
         </tr>
         </thead>
@@ -45,6 +46,7 @@
                     </td>
                     <td>{{ competition.date }}</td>
                     <td>{{ competition.location }}</td>
+                    <td>{{ competition.pool_length }}m</td>
                     <td>{{ competition.get_athlete_count }}</td>
                 </tr>
             {% endif %}

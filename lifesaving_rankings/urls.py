@@ -29,7 +29,6 @@ urlpatterns = [
         view=views.FrontPageRecords.as_view(),
         name='profile'),
     url(r'^rankings/', include('rankings.urls')),
-    url(r'^analysis/', include('analysis.urls')),
     url(r'^admin/', admin.site.urls)
 ]
 

@@ -20,6 +20,7 @@
 {% block content %}
 
     <h1 class="ui header">{{ competition.name }} - {{ competition.date }}</h1>
+    <h2 class="ui header">{{ competition.location }} ({{ competition.pool_length }}m pool)</h2>
 
     <a href="{% url 'competition-list' %}" class="button back">
         <button class="ui left labeled icon button">

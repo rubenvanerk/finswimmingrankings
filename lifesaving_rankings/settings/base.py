@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'rankings',
     'lifesaving_rankings',
-    'analysis',
     'debug_toolbar',
     'widget_tweaks',
     'allauth',

@@ -17,7 +17,7 @@ urlpatterns = [
         name='athlete-add-time'
     ),
     url(
-        regex=r'^athlete/(?P<slug>[a-z0-9\-]+)/(?P<event_name>[a-z0-9\-()]+)$',
+        regex=r'^athlete/(?P<slug>[a-z0-9\-]+)/(?P<event_name>[a-z0-9\-()]+)/(?P<pool_length>25|50)$',
         view=views.EventByAthlete.as_view(),
         name='athlete-event'
     ),
